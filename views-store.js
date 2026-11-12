@@ -372,7 +372,7 @@ function catalog(ctx, data) {
     title,
     desc: activeCat
       ? lang === 'ar'
-        ? `تشكيلة ${activeCat.name_ar} في متجر بورتا بلوك أريانة — أسعار بالدينار، توصيل 24–48 ساعة ودفع عند الاستلام.`
+        ? `تشكيلة ${activeCat.name_ar} — أسعار بالدينار، توصيل 24–48 ساعة ودفع عند الاستلام.`
         : `${activeCat.name_fr} pas cher en Tunisie — Demo Store. Prix en DT, livraison 24–48h, paiement à la livraison.`
       : lang === 'ar'
       ? s_meta(ctx, 'ar')
