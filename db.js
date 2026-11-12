@@ -48,23 +48,54 @@ if (process.env.PORTABLOOK_BLOBS_MODULE) {
 
 let blobStore = null;
 function blobs() {
-  if (!IS_NETLIFY) return null;
-  if (blobStore === null) {
-    try {
+  if (!IS_SERVERLESS) return null;
+  if (blobStore !== null) return blobStore || null;
+  try {
+    if (IS_NETLIFY) {
       blobStore = getStoreFn({ name: 'demo-store-data', consistency: 'strong' });
-    } catch (err) {
-      console.error('Demo: Blob store unavailable, data will not persist:', err.message);
-      blobStore = false;
+    } else if (process.env.VERCEL) {
+      // Vercel Blob backend (private store, token auto-injected on the project).
+      const vb = require('@vercel/blob');
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (!token) throw new Error('BLOB_READ_WRITE_TOKEN is not set');
+      const isNotFound = (err) =>
+        err &&
+        ((err.name && /NotFound/.test(err.name)) ||
+          /not found/i.test(String(err.message || err)));
+      blobStore = {
+        async get(key) {
+          try {
+            const res = await vb.get(key, { access: 'private', token });
+            if (res == null) return null;
+            if (typeof res === 'string') return res;
+            if (res.stream) return await new Response(res.stream).text();
+            const url = (res.blob && (res.blob.downloadUrl || res.blob.url)) || res.downloadUrl || res.url;
+            if (!url) return null;
+            const r = await fetch(url, { headers: { authorization: `Bearer ${token}` } });
+            return await r.text();
+          } catch (err) {
+            if (isNotFound(err)) return null;
+            throw err;
+          }
+        },
+        async set(key, value) {
+          await vb.put(key, value, { access: 'private', addRandomSuffix: false, allowOverwrite: true, token });
+        },
+      };
     }
+  } catch (err) {
+    console.error('Demo: Blob store unavailable, data will not persist:', err.message);
+    blobStore = false;
   }
   return blobStore || null;
 }
 
 let dirty = false;
 let flushChain = null;
+const INSTANCE_ID = Math.random().toString(36).slice(2, 8);
 
 function markDirty() {
-  if (IS_NETLIFY) dirty = true;
+  if (IS_SERVERLESS) dirty = true;
 }
 
 function snapshotJSON() {
@@ -96,7 +127,7 @@ function restoreSnapshot(text) {
 }
 
 async function flush() {
-  if (!IS_NETLIFY) return;
+  if (!IS_SERVERLESS) return;
   if (!dirty) return;
   dirty = false;
   const store = blobs();
@@ -105,6 +136,9 @@ async function flush() {
   const prev = flushChain || Promise.resolve();
   flushChain = prev
     .then(() => store.set('db.json', body))
+    .then(() => {
+      if (process.env.VERCEL) console.error(`[flush:${INSTANCE_ID}] wrote ${body.length}B`);
+    })
     .catch((err) => console.error('Demo: persist failed:', err.message));
   await flushChain;
 }
@@ -119,23 +153,28 @@ function initDb() {
 }
 
 async function boot() {
-  if (!IS_NETLIFY) return;
+  if (!IS_SERVERLESS) return;
   const store = blobs();
   if (store) {
     try {
       const snap = await store.get('db.json');
       if (snap) {
         restoreSnapshot(snap);
+        // Restored data is authoritative — don't re-flush it on this request.
+        dirty = false;
+        if (process.env.VERCEL) console.error(`[boot:${INSTANCE_ID}] restored ${snap.length}B`);
         return;
       }
+      if (process.env.VERCEL) console.error(`[boot:${INSTANCE_ID}] no snapshot, seeding`);
     } catch (err) {
-      console.error('Demo: snapshot restore failed, reseeding:', err.message);
+      console.error(`[boot:${INSTANCE_ID}] restore failed, reseeding:`, err.message);
     }
   }
   seed();
   if (store) {
     try {
       await store.set('db.json', snapshotJSON());
+      if (process.env.VERCEL) console.error(`[boot:${INSTANCE_ID}] seeded + wrote snapshot`);
     } catch (err) {
       console.error('Demo: initial persist failed:', err.message);
     }

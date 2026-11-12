@@ -15,9 +15,19 @@ const HOST = process.env.HOST || '0.0.0.0';
 const ADMIN_PASSWORD = process.env.DEMO_ADMIN_PASSWORD || 'demostore2026';
 const ROOT = __dirname;
 
-seed();
-// Demo store sells new products only. Keep this invariant for older databases too.
-db.prepare("UPDATE products SET condition = 'new' WHERE condition <> 'new'").run();
+// On serverless the DB starts empty at module load (blob restore happens later,
+// inside initDb); seeding here would race the snapshot restore.
+const IS_SERVERLESS = Boolean(
+  process.env.VERCEL ||
+  process.env.NETLIFY ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT
+);
+if (!IS_SERVERLESS) seed();
+if (!IS_SERVERLESS) {
+  // Demo store sells new products only. Keep this invariant for older databases too.
+  db.prepare("UPDATE products SET condition = 'new' WHERE condition <> 'new'").run();
+}
 
 /* ------------------------------------------------------------------ utils */
 function parseCookies(req) {
@@ -927,4 +937,6 @@ async function persistentHandler(req, res) {
   }
 }
 
-module.exports = { handler: persistentHandler, server };
+// Export the request handler directly: Vercel's Node runtime bundles the
+// module tree and requires a function (or server) as the export.
+module.exports = persistentHandler;

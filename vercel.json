@@ -2,17 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "functions": {
-    "api/index.js": {
-      "includeFiles": [
-        "public/**",
-        "uploads/**"
-      ]
+    "api/[[...path]].js": {
+      "includeFiles": "../**"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index.js"
-    }
-  ]
+  }
 }
