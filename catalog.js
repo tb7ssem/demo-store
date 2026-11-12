@@ -1,0 +1,312 @@
+'use strict';
+
+// Market-reference catalog researched from Tunisian retailers in November 2026.
+// Prices and availability must be confirmed by the client before orders are enabled.
+const CATS = [
+  ['ecouteurs', 'Écouteurs sans fil', 'سماعات لاسلكية', '#7C3AED', 1],
+  ['enceintes', 'Enceintes Bluetooth', 'مكبرات صوت بلوتوث', '#EA580C', 2],
+  ['smartphones', 'Smartphones', 'هواتف ذكية', '#0891B2', 3],
+];
+
+function product(data) {
+  return {
+    oldPrice: null,
+    stock: 0,
+    warranty: 12,
+    condition: 'new',
+    badge: null,
+    active: 1,
+    image: `/img/products/${data.slug}.webp`,
+    ...data,
+  };
+}
+
+const PRODUCTS = [
+  /* ---------------------------------------------------------- smartphones */
+  product({
+    slug: 'samsung-galaxy-a16-128', sku: 'PB-SP-0001', category: 'smartphones', brand: 'Samsung', price: 749,
+    nameFr: 'Samsung Galaxy A16 · 6/128 Go', nameAr: 'سامسونغ غالاكسي A16 · 6/128 جيغا',
+    specs: { Écran: '6,7" Super AMOLED · 90 Hz', Processeur: 'MediaTek Helio G99', Mémoire: '6 Go + 128 Go', Photo: '50 + 5 + 2 Mpx', Batterie: '5000 mAh · 25 W', Réseau: '4G · NFC', Protection: 'IP54' },
+    descriptionFr: "Un smartphone équilibré pour le quotidien, avec un grand écran AMOLED, une caméra principale de 50 Mpx et une batterie de 5000 mAh. Son stockage de 128 Go convient aux applications, photos et vidéos.",
+    descriptionAr: 'هاتف متوازن للاستعمال اليومي بشاشة AMOLED كبيرة وكاميرا رئيسية 50 ميغابكسل وبطارية 5000 مللي أمبير. سعة 128 جيغا مناسبة للتطبيقات والصور والفيديو.',
+  }),
+  product({
+    slug: 'samsung-galaxy-a26-5g-128', sku: 'PB-SP-0002', category: 'smartphones', brand: 'Samsung', price: 1069,
+    nameFr: 'Samsung Galaxy A26 5G · 6/128 Go', nameAr: 'سامسونغ غالاكسي A26 5G · 6/128 جيغا',
+    specs: { Écran: '6,7" Super AMOLED · 120 Hz', Processeur: 'Exynos 1380', Mémoire: '6 Go + 128 Go', Photo: '50 + 8 + 2 Mpx · vidéo 4K', Batterie: '5000 mAh', Réseau: '5G', Protection: 'IP67' },
+    descriptionFr: "Le Galaxy A26 ajoute la 5G, un écran AMOLED 120 Hz et une protection IP67. La caméra de 50 Mpx et l'enregistrement 4K en font un modèle polyvalent pour les réseaux sociaux et le multimédia.",
+    descriptionAr: 'يضيف غالاكسي A26 شبكة 5G وشاشة AMOLED بتردد 120 هرتز وحماية IP67. كاميرا 50 ميغابكسل وتصوير 4K يجعلان منه هاتفا متنوعا للوسائط والتواصل.',
+  }),
+  product({
+    slug: 'samsung-galaxy-a27-5g-128', sku: 'PB-SP-0003', category: 'smartphones', brand: 'Samsung', price: 1399,
+    nameFr: 'Samsung Galaxy A27 5G · 6/128 Go', nameAr: 'سامسونغ غالاكسي A27 5G · 6/128 جيغا',
+    specs: { Écran: '6,7" Super AMOLED · 120 Hz', Processeur: 'Snapdragon 6 Gen 3', Mémoire: '6 Go + 128 Go', Photo: '50 + 5 + 2 Mpx', Batterie: '5000 mAh · 25 W', Réseau: '5G', Protection: 'IP64' },
+    descriptionFr: "Un milieu de gamme 5G fluide grâce à son écran AMOLED 120 Hz et au Snapdragon 6 Gen 3. Il associe 128 Go de stockage, une caméra de 50 Mpx et une batterie conçue pour tenir la journée.",
+    descriptionAr: 'هاتف 5G متوسط الفئة بأداء سلس بفضل شاشة AMOLED 120 هرتز ومعالج Snapdragon 6 Gen 3، مع تخزين 128 جيغا وكاميرا 50 ميغابكسل وبطارية للاستخدام اليومي.',
+  }),
+  product({
+    slug: 'samsung-galaxy-a36-5g-256', sku: 'PB-SP-0004', category: 'smartphones', brand: 'Samsung', price: 1549,
+    nameFr: 'Samsung Galaxy A36 5G · 8/256 Go', nameAr: 'سامسونغ غالاكسي A36 5G · 8/256 جيغا',
+    specs: { Écran: '6,7" Super AMOLED · 120 Hz', Processeur: 'Snapdragon 6 Gen 3', Mémoire: '8 Go + 256 Go', Photo: '50 + 8 + 5 Mpx · vidéo 4K', Batterie: '5000 mAh', Réseau: '5G', Protection: 'IP67' },
+    descriptionFr: "Avec 8 Go de RAM et 256 Go de stockage, le Galaxy A36 vise les utilisateurs qui veulent garder leur téléphone plusieurs années. Son écran 120 Hz, la 5G et la certification IP67 complètent une fiche solide.",
+    descriptionAr: 'بذاكرة 8 جيغا وتخزين 256 جيغا، يناسب غالاكسي A36 من يريد هاتفا لسنوات. شاشة 120 هرتز وشبكة 5G وحماية IP67 تكمل مواصفاته المتوازنة.',
+  }),
+  product({
+    slug: 'samsung-galaxy-a56-5g-128', sku: 'PB-SP-0005', category: 'smartphones', brand: 'Samsung', price: 1699,
+    nameFr: 'Samsung Galaxy A56 5G · 8/128 Go', nameAr: 'سامسونغ غالاكسي A56 5G · 8/128 جيغا',
+    specs: { Écran: '6,7" Super AMOLED · 120 Hz', Processeur: 'Exynos 1580', Mémoire: '8 Go + 128 Go', Photo: '50 + 12 + 5 Mpx · vidéo 4K', Batterie: '5000 mAh', Réseau: '5G', Protection: 'IP67' },
+    descriptionFr: "Le Galaxy A56 privilégie l'écran, la photo et la finition. Son capteur principal de 50 Mpx, l'ultra grand-angle de 12 Mpx et l'écran AMOLED 120 Hz offrent une expérience complète en 5G.",
+    descriptionAr: 'يركز غالاكسي A56 على الشاشة والتصوير وجودة الصنع. كاميرا 50 ميغابكسل وعدسة واسعة 12 ميغابكسل وشاشة AMOLED 120 هرتز تقدم تجربة 5G متكاملة.',
+  }),
+  product({
+    slug: 'samsung-galaxy-s25-fe-256', sku: 'PB-SP-0006', category: 'smartphones', brand: 'Samsung', price: 2799,
+    nameFr: 'Samsung Galaxy S25 FE 5G · 8/256 Go', nameAr: 'سامسونغ غالاكسي S25 FE 5G · 8/256 جيغا',
+    specs: { Écran: '6,7" Dynamic AMOLED 2X · 120 Hz', Processeur: 'Exynos 2400', Mémoire: '8 Go + 256 Go', Photo: '50 + 12 + 8 Mpx · zoom 30×', Batterie: '4900 mAh · 45 W', Réseau: '5G', Protection: 'IP68' },
+    descriptionFr: "Une porte d'entrée dans la gamme Galaxy S avec écran Dynamic AMOLED, triple caméra et charge sans fil. Le stockage de 256 Go et la protection IP68 conviennent à un usage intensif.",
+    descriptionAr: 'مدخل إلى سلسلة Galaxy S بشاشة Dynamic AMOLED وثلاث كاميرات وشحن لاسلكي. تخزين 256 جيغا وحماية IP68 مناسبان للاستعمال المكثف.',
+  }),
+  product({
+    slug: 'samsung-galaxy-s26-ultra-256', sku: 'PB-SP-0007', category: 'smartphones', brand: 'Samsung', price: 5999,
+    nameFr: 'Samsung Galaxy S26 Ultra 5G · 12/256 Go', nameAr: 'سامسونغ غالاكسي S26 Ultra 5G · 12/256 جيغا',
+    specs: { Écran: '6,9" QHD+ Dynamic AMOLED 2X · 120 Hz', Processeur: 'Snapdragon 8 Elite Gen 5', Mémoire: '12 Go + 256 Go', Photo: '200 + 50 + 50 + 10 Mpx · zoom 100×', Batterie: '5000 mAh · 60 W', Réseau: '5G · eSIM', Protection: 'IP68' },
+    descriptionFr: "Le modèle Ultra associe un écran QHD+ de 6,9 pouces, un appareil photo principal de 200 Mpx et un zoom longue portée. Ses 12 Go de RAM ciblent la création, le jeu et le multitâche avancé.",
+    descriptionAr: 'يجمع إصدار Ultra شاشة QHD+ بحجم 6.9 بوصة وكاميرا رئيسية 200 ميغابكسل وتقريبا بعيد المدى. ذاكرة 12 جيغا مناسبة للإبداع والألعاب وتعدد المهام.',
+  }),
+  product({
+    slug: 'apple-iphone-16-128', sku: 'PB-SP-0008', category: 'smartphones', brand: 'Apple', price: 4099,
+    nameFr: 'Apple iPhone 16 · 128 Go', nameAr: 'آبل آيفون 16 · 128 جيغا',
+    specs: { Écran: '6,1" Super Retina XDR OLED', Processeur: 'Apple A18', Stockage: '128 Go', Photo: '48 + 12 Mpx', Système: 'iOS 18', Réseau: '5G · Wi‑Fi 7', Protection: 'IP68' },
+    descriptionFr: "L'iPhone 16 combine la puce A18, un écran OLED de 6,1 pouces et un système photo principal de 48 Mpx. Le format compact, la 5G et l'USB-C en font un choix polyvalent dans l'écosystème Apple.",
+    descriptionAr: 'يجمع آيفون 16 شريحة A18 وشاشة OLED بحجم 6.1 بوصة وكاميرا رئيسية 48 ميغابكسل. حجمه المدمج و5G وUSB-C يجعله خيارا متنوعا ضمن منظومة آبل.',
+  }),
+  product({
+    slug: 'apple-iphone-16e-128', sku: 'PB-SP-0009', category: 'smartphones', brand: 'Apple', price: 2799,
+    nameFr: 'Apple iPhone 16e · 128 Go', nameAr: 'آبل آيفون 16e · 128 جيغا',
+    specs: { Écran: '6,1" Super Retina XDR OLED', Processeur: 'Apple A18', Mémoire: '8 Go + 128 Go', Photo: 'Fusion 48 Mpx', Système: 'iOS 18', Réseau: '5G', Protection: 'IP68' },
+    descriptionFr: "L'iPhone 16e reprend la puce A18 et un écran OLED de 6,1 pouces dans une formule plus accessible. Sa caméra Fusion 48 Mpx, Face ID et la 5G couvrent les usages essentiels d'iOS.",
+    descriptionAr: 'يقدم آيفون 16e شريحة A18 وشاشة OLED بحجم 6.1 بوصة بسعر أقل. كاميرا Fusion بدقة 48 ميغابكسل وFace ID وشبكة 5G تغطي أهم استعمالات iOS.',
+  }),
+  product({
+    slug: 'apple-iphone-16-pro-max-256', sku: 'PB-SP-0010', category: 'smartphones', brand: 'Apple', price: 4999, warranty: 24,
+    nameFr: 'Apple iPhone 16 Pro Max · 256 Go', nameAr: 'آبل آيفون 16 Pro Max · 256 جيغا',
+    specs: { Écran: '6,9" Super Retina XDR OLED', Processeur: 'Apple A18 Pro', Stockage: '256 Go', Photo: 'Système Pro 48 Mpx', Système: 'iOS 18', Réseau: '5G · Wi‑Fi 7', Protection: 'IP68' },
+    descriptionFr: "Le grand modèle Pro réunit un écran OLED de 6,9 pouces, la puce A18 Pro et 256 Go de stockage. Il s'adresse aux utilisateurs exigeants en photo, vidéo, autonomie et puissance.",
+    descriptionAr: 'يجمع أكبر إصدار Pro شاشة OLED بحجم 6.9 بوصة وشريحة A18 Pro وتخزين 256 جيغا. موجه لمن يطلب أداء قويا في التصوير والفيديو والبطارية.',
+  }),
+  product({
+    slug: 'redmi-note-15-4g-256', sku: 'PB-SP-0011', category: 'smartphones', brand: 'Xiaomi', price: 949,
+    nameFr: 'Xiaomi Redmi Note 15 4G · 8/256 Go', nameAr: 'شاومي ريدمي نوت 15 4G · 8/256 جيغا',
+    specs: { Écran: '6,77" AMOLED · 120 Hz', Processeur: 'MediaTek Helio G100 Ultra', Mémoire: '8 Go + 256 Go', Photo: '108 + 2 Mpx', Batterie: '6000 mAh · 33 W', Réseau: '4G', Protection: 'IP64' },
+    descriptionFr: "Un rapport équipement-prix attractif avec écran AMOLED 120 Hz, caméra 108 Mpx et batterie de 6000 mAh. Les 8 Go de RAM et 256 Go de stockage laissent une bonne marge au quotidien.",
+    descriptionAr: 'قيمة قوية مقابل السعر مع شاشة AMOLED 120 هرتز وكاميرا 108 ميغابكسل وبطارية 6000 مللي أمبير. ذاكرة 8 جيغا وتخزين 256 جيغا يوفران راحة يومية.',
+  }),
+  product({
+    slug: 'honor-x7e-128', sku: 'PB-SP-0012', category: 'smartphones', brand: 'Honor', price: 839,
+    nameFr: 'Honor X7e 4G · 6/128 Go', nameAr: 'هونر X7e 4G · 6/128 جيغا',
+    specs: { Écran: '6,61" LCD · 120 Hz', Processeur: 'MediaTek Helio G81 Ultra', Mémoire: '6 Go + 128 Go', Photo: '50 Mpx', Batterie: '7500 mAh · 45 W', Réseau: '4G', Protection: 'IP64' },
+    descriptionFr: "Le Honor X7e mise sur l'autonomie avec une batterie de 7500 mAh et une charge 45 W. Son écran 120 Hz et la caméra 50 Mpx répondent aux besoins courants sans dépasser le milieu de gamme.",
+    descriptionAr: 'يركز Honor X7e على البطارية بسعة 7500 مللي أمبير وشحن 45 واط. شاشة 120 هرتز وكاميرا 50 ميغابكسل تلبيان الاحتياجات اليومية بسعر متوسط.',
+  }),
+  product({
+    slug: 'honor-x7e-plus-5g-128', sku: 'PB-SP-0013', category: 'smartphones', brand: 'Honor', price: 1099,
+    nameFr: 'Honor X7e Plus 5G · 6/128 Go', nameAr: 'هونر X7e Plus 5G · 6/128 جيغا',
+    specs: { Écran: '6,87" LCD · 120 Hz', Processeur: 'Snapdragon 4 Gen 4', Mémoire: '6 Go + 128 Go', Photo: '50 + 2 Mpx', Batterie: '8100 mAh · 45 W', Réseau: '5G', Protection: 'IP68 · IP69K' },
+    descriptionFr: "Cette version Plus ajoute la 5G, une très grande batterie de 8100 mAh et une résistance renforcée IP68/IP69K. Elle convient aux journées longues et aux usages où l'autonomie prime.",
+    descriptionAr: 'يضيف إصدار Plus شبكة 5G وبطارية ضخمة 8100 مللي أمبير وحماية قوية IP68 وIP69K. مناسب للأيام الطويلة ولمن يعطي الأولوية للبطارية.',
+  }),
+  product({
+    slug: 'honor-x9d-5g-256', sku: 'PB-SP-0014', category: 'smartphones', brand: 'Honor', price: 1499,
+    nameFr: 'Honor X9D 5G · 12/256 Go', nameAr: 'هونر X9D 5G · 12/256 جيغا',
+    specs: { Écran: '6,79" AMOLED · 120 Hz', Processeur: 'Snapdragon 6 Gen 4', Mémoire: '12 Go + 256 Go', Photo: '108 + 5 Mpx', Batterie: '8300 mAh · 66 W', Réseau: '5G · NFC', Protection: 'IP69K' },
+    descriptionFr: "Le Honor X9D associe un écran AMOLED 120 Hz, 12 Go de RAM et une batterie de 8300 mAh. La charge 66 W et la protection renforcée en font un modèle endurant pour un usage intensif.",
+    descriptionAr: 'يجمع Honor X9D شاشة AMOLED 120 هرتز وذاكرة 12 جيغا وبطارية 8300 مللي أمبير. شحن 66 واط والحماية القوية يجعلان منه هاتفا للاستعمال المكثف.',
+  }),
+  product({
+    slug: 'vivo-y31d-128', sku: 'PB-SP-0015', category: 'smartphones', brand: 'Vivo', price: 839,
+    nameFr: 'Vivo Y31D 4G · 6/128 Go', nameAr: 'فيفو Y31D 4G · 6/128 جيغا',
+    specs: { Écran: '6,75" LCD · 120 Hz', Processeur: 'Snapdragon 6s 4G Gen 2', Mémoire: '6 Go + 128 Go', Photo: '50 + 2 Mpx', Batterie: '7200 mAh · 44 W', Réseau: '4G', Protection: 'IP68 · IP69' },
+    descriptionFr: "Le Vivo Y31D privilégie l'autonomie et la robustesse. Sa batterie de 7200 mAh, la charge 44 W et la double certification IP68/IP69 sont complétées par un écran 120 Hz.",
+    descriptionAr: 'يركز Vivo Y31D على البطارية والمتانة. بطارية 7200 مللي أمبير وشحن 44 واط وحماية IP68 وIP69 مع شاشة 120 هرتز.',
+  }),
+  product({
+    slug: 'vivo-y31-5g-256', sku: 'PB-SP-0016', category: 'smartphones', brand: 'Vivo', price: 1169,
+    nameFr: 'Vivo Y31 5G · 8/256 Go', nameAr: 'فيفو Y31 5G · 8/256 جيغا',
+    specs: { Écran: '6,68" LCD · 120 Hz', Processeur: 'Snapdragon 4 Gen 2', Mémoire: '8 Go + 256 Go', Photo: '50 Mpx', Batterie: '6500 mAh · 44 W', Réseau: '5G', Protection: 'IP68 · IP69' },
+    descriptionFr: "Une option 5G endurante avec 256 Go de stockage, écran 120 Hz et batterie de 6500 mAh. Le lecteur d'empreintes latéral et la protection IP68/IP69 facilitent l'usage quotidien.",
+    descriptionAr: 'خيار 5G ببطارية قوية وتخزين 256 جيغا وشاشة 120 هرتز وبطارية 6500 مللي أمبير. قارئ البصمة الجانبي وحماية IP68 وIP69 مناسبين لليوميات.',
+  }),
+  product({
+    slug: 'infinix-note-edge-5g-256', sku: 'PB-SP-0017', category: 'smartphones', brand: 'Infinix', price: 1129, warranty: 18,
+    nameFr: 'Infinix Note Edge 5G · 8/256 Go', nameAr: 'إنفينيكس Note Edge 5G · 8/256 جيغا',
+    specs: { Écran: '6,78" AMOLED incurvé 1.5K · 120 Hz', Processeur: 'Dimensity 7100', Mémoire: '8 Go + 256 Go', Photo: '50 Mpx', Batterie: '6500 mAh · 45 W', Réseau: '5G', Protection: 'IP65' },
+    descriptionFr: "L'écran AMOLED incurvé 1.5K donne au Note Edge une présentation premium. Il combine 5G, stockage de 256 Go, batterie 6500 mAh et charge inversée pour un usage multimédia complet.",
+    descriptionAr: 'تمنح شاشة AMOLED المنحنية بدقة 1.5K هاتف Note Edge مظهرا فاخرا. يجمع 5G وتخزين 256 جيغا وبطارية 6500 مللي أمبير وشحنا عكسيا.',
+  }),
+  product({
+    slug: 'infinix-gt-50-pro-5g-256', sku: 'PB-SP-0018', category: 'smartphones', brand: 'Infinix', price: 1869,
+    nameFr: 'Infinix GT 50 Pro 5G · 12/256 Go', nameAr: 'إنفينيكس GT 50 Pro 5G · 12/256 جيغا',
+    specs: { Écran: '6,78" AMOLED 1.5K · 144 Hz', Processeur: 'Dimensity 8400 Ultimate', Mémoire: '12 Go + 256 Go', Photo: '50 + 8 Mpx', Batterie: '6500 mAh · 45 W', Charge: 'Sans fil 30 W', Réseau: '5G · Wi‑Fi 6' },
+    descriptionFr: "Pensé pour le jeu, le GT 50 Pro propose un écran AMOLED 144 Hz, un processeur Dimensity 8400 Ultimate et 12 Go de RAM. La charge sans fil 30 W complète sa batterie de 6500 mAh.",
+    descriptionAr: 'مصمم للألعاب بشاشة AMOLED 144 هرتز ومعالج Dimensity 8400 Ultimate وذاكرة 12 جيغا. الشحن اللاسلكي 30 واط يكمل بطارية 6500 مللي أمبير.',
+  }),
+  product({
+    slug: 'itel-p65-256', sku: 'PB-SP-0019', category: 'smartphones', brand: 'Itel', price: 499,
+    nameFr: 'Itel P65 · 6/256 Go', nameAr: 'إيتل P65 · 6/256 جيغا',
+    specs: { Écran: '6,7" LCD · 120 Hz', Processeur: 'Octa-core', Mémoire: '6 Go + 256 Go', Photo: '50 Mpx', Batterie: '5000 mAh · 18 W', Réseau: '4G', Système: 'Android 14' },
+    descriptionFr: "Un modèle accessible qui se distingue par ses 256 Go de stockage et son écran 120 Hz. La caméra de 50 Mpx et la batterie 5000 mAh couvrent les besoins essentiels à petit budget.",
+    descriptionAr: 'هاتف اقتصادي يتميز بتخزين 256 جيغا وشاشة 120 هرتز. كاميرا 50 ميغابكسل وبطارية 5000 مللي أمبير تغطيان الاحتياجات الأساسية.',
+  }),
+  product({
+    slug: 'oppo-reno-15f-5g-512', sku: 'PB-SP-0020', category: 'smartphones', brand: 'Oppo', price: 2099, warranty: 24,
+    nameFr: 'Oppo Reno 15F 5G · 12/512 Go', nameAr: 'أوبو Reno 15F 5G · 12/512 جيغا',
+    specs: { Écran: '6,57" AMOLED · 120 Hz', Processeur: 'Snapdragon 6 Gen 1', Mémoire: '12 Go + 512 Go', Photo: '50 + 8 + 2 Mpx · selfie 50 Mpx', Batterie: '7000 mAh · 80 W', Réseau: '5G', Protection: 'IP69' },
+    descriptionFr: "Le Reno 15F combine un grand stockage de 512 Go, un écran AMOLED 120 Hz et deux capteurs de 50 Mpx à l'avant et à l'arrière. Sa batterie 7000 mAh se recharge rapidement à 80 W.",
+    descriptionAr: 'يجمع Reno 15F تخزينا كبيرا 512 جيغا وشاشة AMOLED 120 هرتز وكاميرتين 50 ميغابكسل أمامية وخلفية. بطارية 7000 مللي أمبير تشحن بسرعة 80 واط.',
+  }),
+
+  /* ------------------------------------------------------------- earbuds */
+  product({
+    slug: 'redmi-buds-6-play', sku: 'PB-EC-0001', category: 'ecouteurs', brand: 'Xiaomi', price: 45,
+    nameFr: 'Xiaomi Redmi Buds 6 Play', nameAr: 'شاومي ريدمي Buds 6 Play',
+    specs: { Bluetooth: '5.4 · Google Fast Pair', Autonomie: '7,5 h · 36 h avec boîtier', Audio: 'Transducteur 10 mm', Appels: 'Réduction de bruit par IA', Charge: 'USB‑C · 10 min = 3 h', Protection: 'IPX4' },
+    descriptionFr: "Des écouteurs légers et abordables avec Bluetooth 5.4, commandes tactiles et jusqu'à 36 heures d'autonomie avec le boîtier. La réduction de bruit par IA améliore la clarté des appels.",
+    descriptionAr: 'سماعات خفيفة واقتصادية ببلوتوث 5.4 وتحكم باللمس وبطارية تصل إلى 36 ساعة مع العلبة. تقليل الضوضاء بالذكاء الاصطناعي يحسن وضوح المكالمات.',
+  }),
+  product({
+    slug: 'redmi-buds-8-active', sku: 'PB-EC-0002', category: 'ecouteurs', brand: 'Xiaomi', price: 69,
+    nameFr: 'Xiaomi Redmi Buds 8 Active', nameAr: 'شاومي ريدمي Buds 8 Active',
+    specs: { Bluetooth: '5.4 · connexion double appareil', Autonomie: '7 h · 37 h avec boîtier', Audio: 'Transducteur titane 14,2 mm', Appels: 'Double micro · réduction IA', Charge: 'USB‑C', Protection: 'IP54' },
+    descriptionFr: "Les Redmi Buds 8 Active ajoutent un grand transducteur de 14,2 mm, la connexion à deux appareils et une protection IP54. L'autonomie totale atteint 37 heures avec le boîtier.",
+    descriptionAr: 'تضيف Redmi Buds 8 Active مكبرا 14.2 ملم واتصالا بجهازين وحماية IP54. البطارية الإجمالية تصل إلى 37 ساعة مع العلبة.',
+  }),
+  product({
+    slug: 'honor-choice-earbuds-x7e', sku: 'PB-EC-0003', category: 'ecouteurs', brand: 'Honor', price: 79,
+    nameFr: 'Honor Choice Earbuds X7E', nameAr: 'هونر Choice Earbuds X7E',
+    specs: { Bluetooth: '5.3', Autonomie: '8 h · 40 h avec boîtier', Audio: 'Transducteur 11 mm', Appels: 'Double micro · réduction IA', Charge: 'USB‑C', Protection: 'IP54', Mode: 'Jeu faible latence' },
+    descriptionFr: "Une option abordable avec 40 heures d'autonomie totale, double micro pour les appels et mode jeu. Les écouteurs résistent aux éclaboussures grâce à leur certification IP54.",
+    descriptionAr: 'خيار اقتصادي ببطارية إجمالية 40 ساعة وميكروفونين للمكالمات ووضع ألعاب. السماعات مقاومة للرذاذ بمعيار IP54.',
+  }),
+  product({
+    slug: 'jbl-wave-flex-2', sku: 'PB-EC-0004', category: 'ecouteurs', brand: 'JBL', price: 289,
+    nameFr: 'JBL Wave Flex 2', nameAr: 'JBL Wave Flex 2',
+    specs: { Bluetooth: '5.3 · multipoint', Autonomie: 'Jusqu’à 40 h', Audio: 'Transducteur 12 mm', Microphones: '4', Charge: '2 h · 5 min = 1 h', Protection: 'IP54', Application: 'JBL Headphones' },
+    descriptionFr: "Le format ouvert des Wave Flex 2 reste confortable pour les longues écoutes. Ils offrent quatre microphones, une connexion multipoint et jusqu'à 40 heures d'autonomie avec recharge rapide.",
+    descriptionAr: 'التصميم المفتوح لسماعات Wave Flex 2 مريح للاستماع الطويل. توفر أربعة ميكروفونات واتصالا متعدد الأجهزة وبطارية تصل إلى 40 ساعة مع شحن سريع.',
+  }),
+  product({
+    slug: 'jbl-tune-buds-2', sku: 'PB-EC-0005', category: 'ecouteurs', brand: 'JBL', price: 379,
+    nameFr: 'JBL Tune Buds 2', nameAr: 'JBL Tune Buds 2',
+    specs: { Bluetooth: '5.3 · multipoint', Autonomie: 'Jusqu’à 48 h', Audio: 'Transducteur 10 mm', Microphones: '6', Charge: '2 h', Protection: 'IP54', Application: 'JBL Headphones' },
+    descriptionFr: "Les Tune Buds 2 misent sur les appels avec six microphones et une connexion multipoint. Leur autonomie totale peut atteindre 48 heures, avec une application pour personnaliser le son.",
+    descriptionAr: 'تركز Tune Buds 2 على المكالمات بستة ميكروفونات واتصال متعدد الأجهزة. تصل البطارية الإجمالية إلى 48 ساعة مع تطبيق لتخصيص الصوت.',
+  }),
+  product({
+    slug: 'samsung-galaxy-buds-3', sku: 'PB-EC-0006', category: 'ecouteurs', brand: 'Samsung', price: 399,
+    nameFr: 'Samsung Galaxy Buds3', nameAr: 'سامسونغ غالاكسي Buds3',
+    specs: { Bluetooth: '5.4', ANC: 'Réduction active du bruit', Audio: 'Audio 360°', Microphones: '6', Autonomie: '5 h avec ANC · 6 h sans ANC', Protection: 'IP57', Fonctions: 'Commandes vocales · Galaxy AI' },
+    descriptionFr: "Les Galaxy Buds3 proposent réduction active du bruit, audio 360° et six microphones dans un boîtier compact. L'intégration Galaxy AI facilite les appels et les commandes vocales.",
+    descriptionAr: 'تقدم Galaxy Buds3 إلغاء ضوضاء نشطا وصوتا 360 درجة وستة ميكروفونات في علبة صغيرة. تكامل Galaxy AI يسهل المكالمات والأوامر الصوتية.',
+  }),
+  product({
+    slug: 'huawei-freebuds-5', sku: 'PB-EC-0007', category: 'ecouteurs', brand: 'Huawei', price: 499,
+    nameFr: 'Huawei FreeBuds 5', nameAr: 'هواوي FreeBuds 5',
+    specs: { Bluetooth: '5.2', ANC: 'Réduction de bruit dynamique', Autonomie: 'Jusqu’à 30 h', Audio: '11 mm · Hi‑Res · 16 Hz–40 kHz', Charge: 'USB‑C · boîtier 40 min', Protection: 'IPX4' },
+    descriptionFr: "Les FreeBuds 5 adoptent un format ouvert original avec audio Hi-Res et réduction de bruit dynamique. Leur boîtier USB-C porte l'autonomie totale jusqu'à 30 heures.",
+    descriptionAr: 'تأتي FreeBuds 5 بتصميم مفتوح مميز وصوت Hi-Res وتقليل ضوضاء ديناميكي. علبة USB-C ترفع البطارية الإجمالية إلى 30 ساعة.',
+  }),
+  product({
+    slug: 'samsung-galaxy-buds-4', sku: 'PB-EC-0008', category: 'ecouteurs', brand: 'Samsung', price: 569,
+    nameFr: 'Samsung Galaxy Buds4', nameAr: 'سامسونغ غالاكسي Buds4',
+    specs: { Bluetooth: '6.1', ANC: 'Adaptatif', Audio: '11 mm · Audio 360°', Microphones: '6', Autonomie: '5 h avec ANC · 6 h sans ANC', Protection: 'IP54', Fonctions: 'Galaxy AI · gestes de la tête' },
+    descriptionFr: "Les Galaxy Buds4 associent ANC adaptatif, audio 360° et commandes par gestes. Six microphones et Galaxy AI optimisent les appels et l'écoute sur les appareils Samsung compatibles.",
+    descriptionAr: 'تجمع Galaxy Buds4 إلغاء ضوضاء متكيف وصوتا 360 درجة وتحكما بالإيماءات. ستة ميكروفونات وGalaxy AI يحسنان المكالمات والاستماع على أجهزة سامسونغ المتوافقة.',
+  }),
+  product({
+    slug: 'apple-airpods-4-anc', sku: 'PB-EC-0009', category: 'ecouteurs', brand: 'Apple', price: 879,
+    nameFr: 'Apple AirPods 4 avec ANC', nameAr: 'آبل AirPods 4 مع إلغاء الضوضاء',
+    specs: { Type: 'Écouteurs ouverts True Wireless', ANC: 'Réduction active du bruit', Autonomie: 'Jusqu’à 5 h', Charge: 'Boîtier USB‑C sans fil', Fonctions: 'Audio spatial · boîtier localisable', Compatibilité: 'iPhone · iPad · Mac' },
+    descriptionFr: "Les AirPods 4 conservent un format ouvert tout en ajoutant la réduction active du bruit. Le boîtier USB-C compatible avec la charge sans fil intègre un haut-parleur pour la fonction Localiser.",
+    descriptionAr: 'تحافظ AirPods 4 على التصميم المفتوح مع إضافة إلغاء الضوضاء النشط. علبة USB-C تدعم الشحن اللاسلكي وبها مكبر لتسهيل العثور عليها.',
+  }),
+  product({
+    slug: 'apple-airpods-pro-3', sku: 'PB-EC-0010', category: 'ecouteurs', brand: 'Apple', price: 1099,
+    nameFr: 'Apple AirPods Pro 3', nameAr: 'آبل AirPods Pro 3',
+    specs: { Bluetooth: '5.3', ANC: 'Adaptatif · mode Transparence', Autonomie: '8 h · 24 h avec boîtier', Audio: 'Audio spatial avec suivi', Capteurs: 'Fréquence cardiaque · détection de peau', Protection: 'IP57', Assistant: 'Siri' },
+    descriptionFr: "Les AirPods Pro 3 combinent réduction de bruit adaptative, audio spatial et suivi de fréquence cardiaque pour l'entraînement. Ils offrent jusqu'à huit heures d'écoute avec ANC et une protection IP57.",
+    descriptionAr: 'تجمع AirPods Pro 3 إلغاء ضوضاء متكيف وصوتا مكانيا ومستشعر نبض للتمارين. توفر حتى ثماني ساعات مع إلغاء الضوضاء وحماية IP57.',
+  }),
+
+  /* ------------------------------------------------------------ speakers */
+  product({
+    slug: 'xiaomi-sound-pocket', sku: 'PB-EN-0001', category: 'enceintes', brand: 'Xiaomi', price: 69,
+    nameFr: 'Xiaomi Sound Pocket · 5 W', nameAr: 'شاومي Sound Pocket · 5 واط',
+    specs: { Puissance: '5 W', Bluetooth: '5.4 · portée 25 m', Autonomie: 'Environ 10 h', Batterie: '1000 mAh · USB', Protection: 'IP67', Poids: '195 g' },
+    descriptionFr: "Une mini enceinte de 195 g facile à glisser dans un sac. Elle offre environ dix heures d'écoute, le Bluetooth 5.4 et une protection IP67 contre l'eau et la poussière.",
+    descriptionAr: 'مكبر صغير بوزن 195 غرام يسهل حمله. يوفر حوالي عشر ساعات استماع وبلوتوث 5.4 وحماية IP67 من الماء والغبار.',
+  }),
+  product({
+    slug: 'jbl-go-4', sku: 'PB-EN-0002', category: 'enceintes', brand: 'JBL', price: 159,
+    nameFr: 'JBL Go 4 · IP67', nameAr: 'JBL Go 4 · IP67',
+    specs: { Puissance: '4,2 W', Bluetooth: '5.0 · multipoint', Autonomie: 'Jusqu’à 7 h', Charge: 'Environ 3 h', Protection: 'IP67', Dimensions: '9,4 × 7,8 × 4,2 cm' },
+    descriptionFr: "La JBL Go 4 offre un format très compact, une protection IP67 et jusqu'à sept heures d'autonomie. Elle convient aux déplacements, à la chambre ou à une utilisation en extérieur.",
+    descriptionAr: 'تقدم JBL Go 4 حجما صغيرا جدا وحماية IP67 وبطارية حتى سبع ساعات. مناسبة للتنقل والغرفة والاستعمال في الخارج.',
+  }),
+  product({
+    slug: 'jbl-clip-5', sku: 'PB-EN-0003', category: 'enceintes', brand: 'JBL', price: 199,
+    nameFr: 'JBL Clip 5 · 7 W', nameAr: 'JBL Clip 5 · 7 واط',
+    specs: { Puissance: '7 W', Bluetooth: '5.3 · multipoint', Autonomie: 'Jusqu’à 15 h', Charge: 'Environ 3 h', Protection: 'IP67', Poids: '285 g', Particularité: 'Mousqueton intégré' },
+    descriptionFr: "Grâce à son mousqueton intégré, la Clip 5 s'accroche facilement à un sac. Elle délivre 7 W, résiste à l'eau et à la poussière et peut atteindre 15 heures d'autonomie.",
+    descriptionAr: 'بفضل المشبك المدمج يمكن تعليق Clip 5 بسهولة بالحقيبة. تقدم 7 واط وتقاوم الماء والغبار وتصل بطاريتها إلى 15 ساعة.',
+  }),
+  product({
+    slug: 'xiaomi-sound-outdoor-30w', sku: 'PB-EN-0004', category: 'enceintes', brand: 'Xiaomi', price: 205,
+    nameFr: 'Xiaomi Sound Outdoor · 30 W', nameAr: 'شاومي Sound Outdoor · 30 واط',
+    specs: { Puissance: '30 W', Bluetooth: '5.4 · portée 25 m', Autonomie: 'Environ 12 h', Batterie: '2600 mAh · charge 2,5 h', Protection: 'IP67', Poids: '597 g', Appairage: 'Jusqu’à 100 enceintes' },
+    descriptionFr: "La Sound Outdoor délivre 30 W dans un boîtier IP67 de moins de 600 g. Elle propose environ 12 heures d'autonomie et peut être associée à plusieurs enceintes compatibles.",
+    descriptionAr: 'تقدم Sound Outdoor قوة 30 واط في هيكل IP67 بوزن أقل من 600 غرام. توفر حوالي 12 ساعة ويمكن ربطها بمكبرات متوافقة متعددة.',
+  }),
+  product({
+    slug: 'anker-soundcore-flare-2', sku: 'PB-EN-0005', category: 'enceintes', brand: 'Anker', price: 329,
+    nameFr: 'Anker Soundcore Flare 2 · 20 W', nameAr: 'أنكر Soundcore Flare 2 · 20 واط',
+    specs: { Puissance: '20 W · son 360°', Autonomie: 'Jusqu’à 12 h', Protection: 'IPX7', Éclairage: 'Anneaux LED RGB', Technologie: 'BassUp · PartyCast', Charge: 'USB‑C', Application: 'Soundcore · égaliseur' },
+    descriptionFr: "La Flare 2 diffuse un son à 360° accompagné d'anneaux lumineux RGB. Étanche IPX7, elle offre 20 W, douze heures d'autonomie et un égaliseur réglable dans l'application Soundcore.",
+    descriptionAr: 'تنشر Flare 2 الصوت بزاوية 360 درجة مع إضاءة RGB. مقاومة للماء IPX7 بقوة 20 واط وبطارية 12 ساعة ومعادل صوت عبر تطبيق Soundcore.',
+  }),
+  product({
+    slug: 'sony-ult-field-1', sku: 'PB-EN-0006', category: 'enceintes', brand: 'Sony', price: 349,
+    nameFr: 'Sony ULT Field 1', nameAr: 'سوني ULT Field 1',
+    specs: { Audio: 'Woofer + tweeter · mode ULT', Bluetooth: '5.3 · portée 10 m', Autonomie: 'Environ 12 h', Protection: 'IP67', Charge: 'USB‑C', Poids: '650 g', Application: 'Sony Music Center' },
+    descriptionFr: "La Sony ULT Field 1 associe un woofer, un tweeter et un mode ULT pour renforcer les basses. Son format portable IP67 offre environ douze heures d'autonomie.",
+    descriptionAr: 'تجمع Sony ULT Field 1 مكبر باس وتويتر ووضع ULT لتعزيز الجهير. تصميمها المحمول IP67 يوفر حوالي 12 ساعة.',
+  }),
+  product({
+    slug: 'jbl-flip-6', sku: 'PB-EN-0007', category: 'enceintes', brand: 'JBL', price: 459,
+    nameFr: 'JBL Flip 6 · 30 W', nameAr: 'JBL Flip 6 · 30 واط',
+    specs: { Puissance: '30 W · système 2 voies', Bluetooth: '5.1', Autonomie: 'Jusqu’à 12 h', Charge: 'Environ 2,5 h', Protection: 'IP67', Technologie: 'JBL PartyBoost' },
+    descriptionFr: "La Flip 6 combine 30 W, un système à deux voies et une protection IP67 dans un format facile à transporter. PartyBoost permet de la relier à d'autres enceintes JBL compatibles.",
+    descriptionAr: 'تجمع Flip 6 قوة 30 واط ونظاما ثنائي الاتجاه وحماية IP67 في حجم سهل الحمل. تسمح PartyBoost بربطها بمكبرات JBL متوافقة.',
+  }),
+  product({
+    slug: 'jbl-charge-5', sku: 'PB-EN-0008', category: 'enceintes', brand: 'JBL', price: 589,
+    nameFr: 'JBL Charge 5 · 40 W', nameAr: 'JBL Charge 5 · 40 واط',
+    specs: { Puissance: '40 W', Bluetooth: '5.1', Autonomie: 'Jusqu’à 20 h', Charge: 'Environ 4 h', Protection: 'IP67', Particularité: 'Batterie externe', Technologie: 'JBL PartyBoost' },
+    descriptionFr: "La Charge 5 délivre 40 W et jusqu'à vingt heures d'écoute. Sa batterie peut aussi recharger un téléphone, tandis que la certification IP67 la protège à la plage ou en déplacement.",
+    descriptionAr: 'تقدم Charge 5 قوة 40 واط وحتى 20 ساعة استماع. بطاريتها تشحن الهاتف أيضا، وحماية IP67 تناسب الشاطئ والتنقل.',
+  }),
+  product({
+    slug: 'marshall-stockwell-ii', sku: 'PB-EN-0009', category: 'enceintes', brand: 'Marshall', price: 999,
+    nameFr: 'Marshall Stockwell II', nameAr: 'مارشال Stockwell II',
+    specs: { Puissance: '20 W · woofer + 2 tweeters', Bluetooth: '5.0 · entrée jack 3,5 mm', Autonomie: 'Jusqu’à 20 h', Réglages: 'Graves et aigus', Protection: 'IPX4', Poids: '1,38 kg' },
+    descriptionFr: "La Stockwell II reprend le design Marshall avec commandes physiques pour les graves et les aigus. Elle offre jusqu'à vingt heures d'écoute et accepte une source Bluetooth ou jack 3,5 mm.",
+    descriptionAr: 'تحمل Stockwell II تصميم مارشال مع أزرار فعلية لضبط الجهير والحدة. توفر حتى 20 ساعة وتدعم بلوتوث أو مدخل 3.5 ملم.',
+  }),
+  product({
+    slug: 'jbl-xtreme-4', sku: 'PB-EN-0010', category: 'enceintes', brand: 'JBL', price: 1289,
+    nameFr: 'JBL Xtreme 4', nameAr: 'JBL Xtreme 4',
+    specs: { Puissance: 'Jusqu’à 100 W sur secteur', Bluetooth: '5.3 · multipoint · Auracast', Autonomie: 'Jusqu’à 24 h', Charge: '3,5 h · rapide', Protection: 'IP67', Particularité: 'Batterie externe', Poids: '2,1 kg' },
+    descriptionFr: "La Xtreme 4 vise les grands espaces avec quatre haut-parleurs, une autonomie pouvant atteindre 24 heures et une fonction batterie externe. Elle prend en charge Auracast et résiste à l'eau et à la poussière.",
+    descriptionAr: 'صممت Xtreme 4 للمساحات الكبيرة بأربعة مكبرات وبطارية تصل إلى 24 ساعة ووظيفة شحن للهاتف. تدعم Auracast وتقاوم الماء والغبار.',
+  }),
+];
+
+module.exports = { CATS, PRODUCTS };

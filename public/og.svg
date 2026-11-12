@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset=".6" stop-color="#12203C"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#FFFFFF" stroke-opacity=".05" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1010" cy="120" r="260" fill="#38BDF8" opacity=".12"/>
+  <circle cx="120" cy="600" r="200" fill="#2563EB" opacity=".18"/>
+
+  <g transform="translate(96 214)">
+    <rect x="0" y="0" width="44" height="44" rx="12" fill="#FFFFFF"/>
+    <rect x="13" y="10" width="10" height="24" rx="3" fill="#0B1220"/>
+    <circle cx="30" cy="14" r="6" fill="#0B1220"/>
+    <circle cx="31" cy="31" r="3.4" fill="#38BDF8"/>
+    <text x="60" y="34" font-family="Segoe UI,sans-serif" font-size="34" font-weight="800" fill="#FFFFFF" letter-spacing="-1.5">demo<tspan fill="#38BDF8">store</tspan></text>
+  </g>
+
+  <text x="96" y="352" font-family="Segoe UI,sans-serif" font-size="58" font-weight="800" fill="#FFFFFF" letter-spacing="-2.2">Une boutique complète,</text>
+  <text x="96" y="418" font-family="Segoe UI,sans-serif" font-size="58" font-weight="800" fill="#7DD3FC" letter-spacing="-2.2">prête à votre marque.</text>
+  <text x="96" y="480" font-family="Segoe UI,sans-serif" font-size="23" fill="#B6C7DE">Smartphones · Écouteurs · Enceintes · Version de démonstration</text>
+
+  <g font-family="'JetBrains Mono',Menlo,monospace" font-size="18" fill="#94A3B8">
+    <text x="96" y="548">Catalogue FR / AR</text>
+    <text x="300" y="548" fill="#64748B">/</text>
+    <text x="326" y="548">Livraison 24–48h</text>
+    <text x="560" y="548" fill="#64748B">/</text>
+    <text x="586" y="548">Paiement à la livraison</text>
+    <text x="96" y="584" fill="#38BDF8" font-size="20">Commandes sur WhatsApp</text>
+  </g>
+</svg>
