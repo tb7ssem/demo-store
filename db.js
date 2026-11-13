@@ -379,8 +379,11 @@ function pruneVisits() {
 }
 pruneVisits();
 
-function logVisit(sid, path, lang) {
+const BOT_RE = /bot|crawl|spider|slurp|curl\/|wget|python-requests|headless|lighthouse|pagespeed|facebookexternalhit|whatsapp|telegrambot|discordbot|semrush|ahrefs|mj12|dotbot|petalbot|yandex/i;
+
+function logVisit(sid, path, lang, ua) {
   try {
+    if (ua && BOT_RE.test(ua)) return; // robots & link-preview crawlers, not humans
     const dup = db
       .prepare(`SELECT 1 AS x FROM visits WHERE sid = ? AND path = ? AND created_at > datetime('now','-1 minute')`)
       .get(sid, path);

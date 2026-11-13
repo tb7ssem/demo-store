@@ -305,7 +305,7 @@ async function handler(req, res) {
 
     const ctx = baseCtx(req, res, lang, p);
     if (method === 'GET' && !p.startsWith('/admin')) {
-      logVisit(ctx.sid, (lang === 'ar' ? '/ar' : '') + p, lang);
+      logVisit(ctx.sid, (lang === 'ar' ? '/ar' : '') + p, lang, req.headers['user-agent']);
     }
 
     /* ------------------------------------------------------------- cart */
