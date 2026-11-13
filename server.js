@@ -844,6 +844,12 @@ async function handler(req, res) {
       return html(res, 200, store.product(ctx, prod, related));
     }
 
+    if (['/livraison', '/retours', '/contact', '/mentions'].includes(p)) {
+      const page = store.infoPage(ctx, p.slice(1));
+      if (!page) return notFound(res, req);
+      return html(res, 200, page);
+    }
+
     return notFound(res, req);
   } catch (err) {
     console.error('[error]', req.method, req.url, err);

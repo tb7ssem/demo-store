@@ -717,3 +717,12 @@ s{color:var(--muted-2)}
   .confirm{padding:0}
   .confirm__check{box-shadow:none}
 }
+
+/* info pages */
+.info{max-width:760px}
+.info h2{font-size:17px; margin:26px 0 8px}
+.info h2:first-child{margin-top:0}
+.info p{color:var(--muted); font-size:15px; line-height:1.75; margin:8px 0}
+.info ul{color:var(--muted); font-size:15px; line-height:1.75; margin:8px 0; padding-inline-start:20px}
+.info li{margin:3px 0}
+.info a{color:var(--accent-dark)}

@@ -215,10 +215,10 @@ ${opt.body}
     <div>
       <h4>${t(lang, 'f.help')}</h4>
       <ul>
-        <li><a href="${u(lang, '/boutique')}">${t(lang, 'f.delivery')}</a></li>
-        <li><a href="${u(lang, '/boutique')}">${t(lang, 'f.warranty')}</a></li>
-        <li><a href="${u(lang, '/boutique')}">${t(lang, 'f.contact')}</a></li>
-        <li><a href="${u(lang, '/boutique')}">${t(lang, 'f.legal')}</a></li>
+        <li><a href="${u(lang, '/livraison')}">${t(lang, 'f.delivery')}</a></li>
+        <li><a href="${u(lang, '/retours')}">${t(lang, 'f.warranty')}</a></li>
+        <li><a href="${u(lang, '/contact')}">${t(lang, 'f.contact')}</a></li>
+        <li><a href="${u(lang, '/mentions')}">${t(lang, 'f.legal')}</a></li>
       </ul>
     </div>
     <div>

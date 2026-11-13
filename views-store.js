@@ -782,4 +782,145 @@ function notFound(ctx) {
   return layout(ctx, { title: `404 — ${s.store_name}`, body, noindex: true });
 }
 
-module.exports = { home, catalog, product, cartPage, checkout, confirmed, notFound };
+/* ------------------------------------------------------------ info pages */
+const INFO_PAGES = {
+  livraison: {
+    fr: 'Livraison & retours',
+    ar: 'التوصيل والإرجاع',
+  },
+  retours: {
+    fr: 'Garantie & échange',
+    ar: 'الضمان والتبديل',
+  },
+  contact: {
+    fr: 'Contact',
+    ar: 'اتصل بنا',
+  },
+  mentions: {
+    fr: 'Mentions légales',
+    ar: 'معلومات قانونية',
+  },
+};
+
+function infoBody(key, ctx) {
+  const { lang, s } = ctx;
+  const ar = lang === 'ar';
+  const waNumber = String(s.wa || s.phone || '').replace(/\D/g, '');
+  const waLink = waNumber
+    ? `https://wa.me/${/^[2-9]\d{7}$/.test(waNumber) ? '216' + waNumber : waNumber}`
+    : '';
+  const waBtn = waLink
+    ? `<a class="btn btn--wa" href="${attr(waLink)}" target="_blank" rel="noopener">${ic('phone')} WhatsApp</a>`
+    : '';
+  const shipTunis = money(Number(s.ship_tunis) || 8, lang);
+  const shipOther = money(Number(s.ship_other) || 8, lang);
+  const freeShip = money(Number(s.free_ship) || 500, lang);
+
+  const bodies = {
+    livraison: ar
+      ? `<h2>التوصيل</h2>
+        <p>نوصل إلى كل ولايات الجمهورية التونسية، والتوصيل يكون على باب المنزل.</p>
+        <ul>
+          <li>تونس الكبرى: ${shipTunis} — من 24 إلى 48 ساعة.</li>
+          <li>باقي الولايات: ${shipOther} — من 2 إلى 4 أيام.</li>
+          <li>التوصيل مجاني للطلبات التي تتجاوز ${freeShip}.</li>
+        </ul>
+        <h2>الدفع</h2>
+        <p>الدفع يكون عند الاستلام: تفحص طلبك أولا ثم تدفع للموظف الموصّل.</p>
+        <h2>الإرجاع</h2>
+        <p>يمكنك إرجاع أي منتج غير مستعمل ومع علامته خلال 14 يوما من الاستلام، ونعيد لك المبلغ أو نبدّل لك المنتج.</p>`
+      : `<h2>Livraison</h2>
+        <p>Nous livrons dans les 24 gouvernorats, directement à votre porte.</p>
+        <ul>
+          <li>Grand Tunis : ${shipTunis} — sous 24 à 48h.</li>
+          <li>Autres gouvernorats : ${shipOther} — sous 2 à 4 jours.</li>
+          <li>Livraison offerte dès ${freeShip} d'achat.</li>
+        </ul>
+        <h2>Paiement</h2>
+        <p>Paiement à la livraison : vous vérifiez votre commande, puis vous payez au livreur. Rien à payer en ligne.</p>
+        <h2>Retours</h2>
+        <p>Un produit ne vous convient pas ? Renvoyez-le dans les 14 jours, non porté et avec son étiquette : remboursement ou échange.</p>`,
+    retours: ar
+      ? `<h2>ضمان 12 شهرا</h2>
+        <p>كل المنتجات المعروضة في هذا الموقع جديدة ومغطاة بضمان 12 شهرا ضد عيوب التصنيع.</p>
+        <h2>تبديل في 14 يوما</h2>
+        <p>أنت غير راض عن منتج؟ يمكنك إرجاعه خلال 14 يوما من الاستلام:</p>
+        <ul>
+          <li>المنتج غير مفتوح وبعلبته الأصلية.</li>
+          <li>مع كل ملحقاته.</li>
+          <li>مع رقم الطلب.</li>
+        </ul>
+                <h2>منتج معيب؟</h2>
+        <p>إذا كان بالمنتج عيب في التصنيع، نستبدله مجانا ونتحمل نحن تكاليف الإرجاع. أرسل لنا صورة على واتساب وسنحل المشكلة في أسرع وقت.</p>
+        <h2>كيف تتابع؟</h2>
+        <p>راسلنا على واتساب مع رقم طلبك وسنرتب الاستلام والإرجاع.</p>`
+      : `<h2>Garantie 12 mois</h2>
+        <p>Tous les produits vendus sur ce site sont neufs et couverts par une garantie de 12 mois contre les défauts de fabrication.</p>
+        <h2>Échange sous 14 jours</h2>
+        <p>Un produit ne vous plaît pas ? Renvoyez-le dans les 14 jours suivant la réception :</p>
+        <ul>
+          <li>Article non ouvert, dans son emballage d'origine.</li>
+          <li>Avec tous ses accessoires.</li>
+          <li>Avec votre référence de commande.</li>
+        </ul>
+        <h2>Produit défectueux ?</h2>
+        <p>Si un défaut apparaît pendant la garantie, nous le remplaçons gratuitement — les frais de retour sont à notre charge. Envoyez-nous simplement une photo ou une vidéo sur WhatsApp.</p>
+        <h2>Comment procéder ?</h2>
+        <p>Écrivez-nous sur WhatsApp avec votre numéro de commande : nous organisons la récupération et l'échange.</p>`,
+        contact: ar
+      ? `<h2>تواصل معنا</h2>
+        <ul>
+          <li>📞 الهاتف : <a href="tel:${attr(s.phone)}" dir="ltr">${e(s.phone)}</a></li>
+          <li>📍 العنوان : ${e(s.address)}</li>
+          ${s.email ? `<li>✉️ البريد : ${e(s.email)}</li>` : ''}
+        </ul>
+        <p>${t(lang, 'store.hours')}</p>
+        <p>أسرع طريقة للطلب أو للسؤال : واتساب. نرد عادة في دقائق.</p>
+        <p>${waBtn}</p>`
+      : `<h2>Nous joindre</h2>
+        <ul>
+          <li>📞 Téléphone : <a href="tel:${attr(s.phone)}" dir="ltr">${e(s.phone)}</a></li>
+          <li>📍 Adresse : ${e(s.address)}</li>
+          ${s.email ? `<li>✉️ E-mail : ${e(s.email)}</li>` : ''}
+        </ul>
+        <p>${t(lang, 'store.hours')}</p>
+        <p>Le plus rapide pour commander ou poser une question : WhatsApp. On répond en général en quelques minutes.</p>
+        <p>${waBtn}</p>`,
+    mentions: ar
+      ? `<h2>المحرّر</h2>
+        <p>المتجر : ${e(s.store_name)}<br>العنوان : ${e(s.address)}<br>الهاتف : ${e(s.phone)}</p>
+        <h2>الأسعار</h2>
+        <p>جميع الأسعار بالدينار التونسي (TND)، وتشمل الضرائب. تكلفة التوصيل تظهر قبل تأكيد الطلب.</p>
+        <h2>البيانات الشخصية</h2>
+        <p>المعلومات التي تقدمها (الاسم، الهاتف، العنوان) تستخدم فقط لمعالجة وتوصيل طلبك، ولا تُشارك مع أي طرف ثالث ولا تُباع.</p>
+        <h2>الموقع</h2>
+        <p>الموقع من تصميم Vetrine+.</p>`
+      : `<h2>Éditeur</h2>
+        <p>Magasin : ${e(s.store_name)}<br>Adresse : ${e(s.address)}<br>Téléphone : ${e(s.phone)}</p>
+        <h2>Prix</h2>
+        <p>Tous les prix sont indiqués en dinars tunisiens (TND), taxes incluses. Les frais de livraison sont affichés avant la confirmation de commande.</p>
+        <h2>Données personnelles</h2>
+        <p>Les informations que vous communiquez (nom, téléphone, adresse) servent uniquement à traiter et livrer votre commande. Elles ne sont ni revendues ni partagées avec des tiers.</p>
+        <h2>Site</h2>
+        <p>Site conçu par Vetrine+.</p>`,
+  };
+  return bodies[key] || '';
+}
+
+function infoPage(ctx, key) {
+  const { lang, s } = ctx;
+  const meta = INFO_PAGES[key];
+  if (!meta) return null;
+  const title = lang === 'ar' ? meta.ar : meta.fr;
+  const sub = lang === 'ar'
+    ? 'كل ما تحتاج معرفته قبل الطلب.'
+    : "Tout ce qu'il faut savoir avant de commander.";
+  const body = `<div class="pagehead"><div class="wrap">
+    <h1>${e(title)}</h1>
+    <p class="pagehead__sub">${e(sub)}</p>
+  </div></div>
+  <section class="sec"><div class="wrap"><div class="info">${infoBody(key, ctx)}</div></div></section>`;
+  return layout(ctx, { title: `${title} — ${s.store_name}`, body });
+}
+
+module.exports = { home, catalog, product, cartPage, checkout, confirmed, notFound, infoPage };
