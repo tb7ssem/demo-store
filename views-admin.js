@@ -127,11 +127,12 @@ function dashboard(ctx, d) {
 
   const body = `
 ${s.admin_note ? `<div class="adnote"><strong>Démo</strong> ${e(s.admin_note)} Le catalogue contient encore des produits de démonstration : importez ou ajoutez les vrais produits avant la mise en ligne.</div>` : ''}
-<div class="kpis">
+<div class="kpis kpis--5">
   ${kpi("Chiffre d'affaires (30 j)", money(d.rev30), d.revDelta, 'calculé sur les commandes non annulées')}
   ${kpi('Commandes', d.orders30, d.ordersDelta, `${d.pending} à traiter`)}
   ${kpi('Panier moyen', money(d.aov), null, 'sur 30 jours')}
   ${kpi('Stock faible', d.lowCount, null, 'produits sous 5 unités')}
+  ${kpi('Visites (30 j)', d.visits ? d.visits.v30 : '—', null, d.visits ? `${d.visits.uniq} visiteurs uniques au total` : '')}
 </div>
 
 <div class="ad__grid">
@@ -160,6 +161,25 @@ ${s.admin_note ? `<div class="adnote"><strong>Démo</strong> ${e(s.admin_note)} 
               )
               .join('')
           : '<li class="muted">Aucune vente sur la période.</li>'
+      }
+    </ol>
+  </section>
+
+  <section class="cardpanel">
+    <div class="cardpanel__head"><div><h2>Pages les plus vues</h2><p>30 derniers jours</p></div></div>
+    <ol class="toplist">
+      ${
+        d.visits && d.visits.topPages.length
+          ? d.visits.topPages
+              .map(
+                (p, i) => `<li>
+        <span class="toplist__rank">${i + 1}</span>
+        <div><strong>${e(p.path)}</strong><small>${p.n} vue${p.n > 1 ? 's' : ''}</small></div>
+        <b>${p.n}</b>
+      </li>`
+              )
+              .join('')
+          : '<li class="muted">Aucune visite enregistrée.</li>'
       }
     </ol>
   </section>

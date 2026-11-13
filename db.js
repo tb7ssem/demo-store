@@ -33,7 +33,7 @@ const origExec = db.exec.bind(db);
 const IS_NETLIFY = Boolean(
   process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME
 );
-const TABLES = ['settings', 'categories', 'products', 'orders', 'order_items', 'carts', 'newsletter'];
+const TABLES = ['settings', 'categories', 'products', 'orders', 'order_items', 'carts', 'newsletter', 'visits'];
 
 // Indirection so tests can inject a fake Blob store implementation.
 let getStoreFn = null;
@@ -284,6 +284,15 @@ CREATE TABLE IF NOT EXISTS newsletter (
   email TEXT UNIQUE NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS visits (
+  id INTEGER PRIMARY KEY,
+  sid TEXT NOT NULL,
+  path TEXT NOT NULL,
+  lang TEXT NOT NULL DEFAULT 'fr',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_visits_created ON visits (created_at);
 `);
 
 /* --------------------------------------------------------------- settings */
@@ -361,4 +370,24 @@ function seed() {
   }
 }
 
-module.exports = { db, settings, seed, DATA_DIR, initDb, flush };
+// ------------------------------------------------------------- visits
+// Visitor counter for the admin dashboard. One row per page view
+// (same sid + path within a minute is ignored). Pruned to 90 days so
+// the blob snapshot stays small.
+function pruneVisits() {
+  try { origExec(`DELETE FROM visits WHERE created_at < datetime('now','-90 days')`); } catch {}
+}
+pruneVisits();
+
+function logVisit(sid, path, lang) {
+  try {
+    const dup = db
+      .prepare(`SELECT 1 AS x FROM visits WHERE sid = ? AND path = ? AND created_at > datetime('now','-1 minute')`)
+      .get(sid, path);
+    if (dup) return;
+    db.prepare('INSERT INTO visits (sid, path, lang) VALUES (?, ?, ?)').run(sid, path, lang);
+    pruneVisits();
+  } catch {}
+}
+
+module.exports = { db, settings, seed, DATA_DIR, initDb, flush, logVisit };

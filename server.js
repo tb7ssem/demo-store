@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const { db, settings, seed, initDb, flush: dbFlush } = require('./db');
+const { db, settings, seed, initDb, flush: dbFlush, logVisit } = require('./db');
 const L = require('./lib');
 const ui = require('./ui');
 const store = require('./views-store');
@@ -304,6 +304,9 @@ async function handler(req, res) {
     else if (p.startsWith('/ar/')) { p = p.slice(3); lang = 'ar'; }
 
     const ctx = baseCtx(req, res, lang, p);
+    if (method === 'GET' && !p.startsWith('/admin')) {
+      logVisit(ctx.sid, (lang === 'ar' ? '/ar' : '') + p, lang);
+    }
 
     /* ------------------------------------------------------------- cart */
     if (p === '/panier') {
@@ -669,12 +672,21 @@ async function handler(req, res) {
         const recent = db.prepare(`SELECT o.*, (SELECT COUNT(*) FROM order_items WHERE order_id = o.id) AS items_count
           FROM orders o ORDER BY o.created_at DESC, o.id DESC LIMIT 6`).all();
         const low = db.prepare('SELECT * FROM products WHERE stock <= 5 ORDER BY stock ASC, id DESC LIMIT 6').all();
+        const visits = {
+          today: db.prepare(`SELECT COUNT(*) AS n FROM visits WHERE created_at >= datetime('now','start of day')`).get().n,
+          v7: db.prepare(`SELECT COUNT(*) AS n FROM visits WHERE created_at >= datetime('now','-7 days')`).get().n,
+          v30: db.prepare(`SELECT COUNT(*) AS n FROM visits WHERE created_at >= datetime('now','-30 days')`).get().n,
+          uniq: db.prepare('SELECT COUNT(DISTINCT sid) AS n FROM visits').get().n,
+          total: db.prepare('SELECT COUNT(*) AS n FROM visits').get().n,
+          topPages: db.prepare(`SELECT path, COUNT(*) AS n FROM visits
+            WHERE created_at >= datetime('now','-30 days') GROUP BY path ORDER BY n DESC LIMIT 5`).all(),
+        };
 
         const acx = { ...ctx, adActive: '/', newOrders: status.nouvelle || 0, lowCount };
         return html(res, 200, admin.dashboard(acx, {
           rev30, revDelta: delta(rev30, prevRev), orders30, ordersDelta: delta(orders30, prevOrders),
           pending: status.nouvelle || 0, aov: orders30 ? rev30 / orders30 : 0,
-          lowCount, chart, top, recent, low,
+          lowCount, chart, top, recent, low, visits,
         }));
       }
 
